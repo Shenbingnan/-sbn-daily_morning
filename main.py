@@ -17,13 +17,23 @@ app_secret = os.environ["APP_SECRET"]
 user_id = os.environ["USER_ID"]
 template_id = os.environ["TEMPLATE_ID"]
 
-
 def get_weather():
-#   url = "http://autodev.openspeech.cn/csp/api/v2.1/weather?openId=aiuicus&clientType=android&sign=android&city=" + city
-  url='http://autodev.openspeech.cn/csp/api/v2.1/weather?openId=aiuicus&clientType=android&sign=android&latitude=8.4036527&longitude=49.0068901&needMoreData=true&pageNo=1&pageSize=7&city='+city
-  res = requests.get(url).json()
-  weather = res['data']['list'][0]
-  return weather['weather'], math.floor(weather['temp'])
+  api_key = "f7e5ec33c2b450ac4be1c2a31ca117bd"
+  # url = "http://autodev.openspeech.cn/csp/api/v2.1/weather?openId=aiuicus&clientType=android&sign=android&city=" + city
+  # url='http://autodev.openspeech.cn/csp/api/v2.1/weather?openId=aiuicus&clientType=android&sign=android&latitude=8.4036527&longitude=49.0068901&needMoreData=true&pageNo=1&pageSize=7&city='+city
+  # url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=zh_cn"
+  url = f"http://api.openweathermap.org/data/2.5/weather?q=Karlsruhe&appid={api_key}&units=metric&lang=zh_cn"
+  # res = requests.get(url).json()
+  response = requests.get(url)
+  data = response.json()
+  if response.status_code == 200:
+    weather = data["weather"][0]["description"]
+    temperature = data["main"]["temp"]
+    print(f"Weather in {city}: {weather}")
+    print(f"Temperature in {city}: {temperature} 摄氏度")
+    return weather, temperature
+  else:
+    print("Failed to fetch weather data")
 
 def get_count():
   delta = today - datetime.strptime(start_date, "%Y-%m-%d")
